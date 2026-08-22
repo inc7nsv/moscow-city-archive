@@ -1,0 +1,64 @@
+{% extends 'archive_app/base.html' %}
+{% block title %}{{ article.title }} — Архив Москвы{% endblock %}
+{% block content %}
+<section class="article-page section">
+    <div class="container narrow">
+        <a class="back-link" href="{% url 'home' %}">← Назад на главную</a>
+        <header class="article-header">
+            <time datetime="{{ article.published_at|date:'c' }}">{{ article.published_at|date:'d.m.Y' }}</time>
+            <h1>{{ article.title }}</h1>
+            <p class="lead">{{ article.summary }}</p>
+            <img class="article-cover" src="{{ article.cover.url }}" alt="Обложка статьи {{ article.title }}">
+        </header>
+
+        <div class="article-content">
+            {% for block in article.blocks.all %}
+                {% if block.block_type == 'text' %}
+                    {% if block.text %}<div class="text-block">{{ block.text|linebreaks }}</div>{% endif %}
+                {% elif block.block_type == 'image' and block.image %}
+                    <figure>
+                        <img src="{{ block.image.url }}" alt="{{ block.image_alt|default:article.title }}">
+                        {% if block.caption %}<figcaption>{{ block.caption }}</figcaption>{% endif %}
+                    </figure>
+                {% endif %}
+            {% empty %}
+                <p>Содержимое статьи пока не добавлено.</p>
+            {% endfor %}
+        </div>
+
+        <section class="comments" aria-labelledby="comments-title">
+            <div class="section-heading compact">
+                <div><span class="eyebrow">Обсуждение</span><h2 id="comments-title">Комментарии</h2></div>
+            </div>
+
+            {% if user.is_authenticated %}
+                <form method="post" class="panel form-panel">
+                    {% csrf_token %}
+                    {{ comment_form.non_field_errors }}
+                    <label for="{{ comment_form.text.id_for_label }}">Ваш комментарий</label>
+                    {{ comment_form.text }}
+                    {% for error in comment_form.text.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+                    <button class="primary-btn" type="submit">Отправить</button>
+                </form>
+            {% else %}
+                <div class="panel login-notice">
+                    <p>Чтобы оставить комментарий, необходимо авторизоваться.</p>
+                    <a class="primary-btn" href="{% url 'login' %}?next={{ request.path|urlencode }}">Войти</a>
+                </div>
+            {% endif %}
+
+            <div class="comment-list">
+                {% for comment in comments %}
+                    <article class="comment">
+                        <div class="comment-meta"><strong>{{ comment.author.username }}</strong><time>{{ comment.created_at|date:'d.m.Y H:i' }}</time></div>
+                        <p>{{ comment.text|linebreaksbr }}</p>
+                    </article>
+                {% empty %}
+                    <p class="muted">Комментариев пока нет.</p>
+                {% endfor %}
+            </div>
+        </section>
+        <a class="back-link bottom" href="{% url 'home' %}">← Назад на главную</a>
+    </div>
+</section>
+{% endblock %}

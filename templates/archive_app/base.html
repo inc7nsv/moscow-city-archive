@@ -1,0 +1,109 @@
+{% load static %}
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Информационный сайт Государственного архива города Москвы">
+    <title>{% block title %}Государственный архив города Москвы{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script defer src="{% static 'js/accessibility.js' %}"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Перейти к основному содержимому</a>
+<header class="site-header">
+    <div class="container header-row">
+        <a class="brand" href="{% url 'home' %}" aria-label="Государственный архив города Москвы — главная">
+            <span class="brand-mark" aria-hidden="true">М</span>
+            <span>Архив Москвы</span>
+        </a>
+        <nav class="main-nav" aria-label="Основная навигация">
+            <a href="{% url 'home' %}">Главная</a>
+            <a href="{% url 'about' %}">Об организации</a>
+            <a href="{% url 'contacts' %}">Контакты</a>
+            <a href="{% url 'feedback' %}">Обратная связь</a>
+            <a href="{% url 'sitemap_page' %}">Карта сайта</a>
+        </nav>
+        <div class="header-actions">
+            <button type="button" class="accessibility-btn" id="accessibility-toggle" aria-pressed="false">
+                Для слабовидящих
+            </button>
+            {% if user.is_authenticated %}
+                <span class="user-name">{{ user.username }}</span>
+                <form method="post" action="{% url 'logout' %}" class="inline-form">
+                    {% csrf_token %}
+                    <button class="auth-btn secondary" type="submit">Выйти</button>
+                </form>
+            {% else %}
+                <button class="auth-btn" type="button" data-auth-open>Авторизация</button>
+            {% endif %}
+        </div>
+    </div>
+</header>
+
+{% if not user.is_authenticated %}
+<div class="modal" id="auth-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="auth-modal-title">
+    <div class="modal-backdrop" data-auth-close></div>
+    <div class="modal-card" role="document">
+        <button class="modal-close" type="button" aria-label="Закрыть" data-auth-close>×</button>
+        <h2 id="auth-modal-title">Личный кабинет</h2>
+        <p>Войдите в существующую учетную запись или зарегистрируйтесь.</p>
+        <div class="modal-actions">
+            <a class="primary-btn" href="{% url 'login' %}">Войти</a>
+            <a class="outline-btn" href="{% url 'register' %}">Регистрация</a>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if messages %}
+<div class="container messages" aria-live="polite">
+    {% for message in messages %}
+        <div class="message {{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<main id="main-content">
+    {% block content %}{% endblock %}
+</main>
+
+<footer class="site-footer">
+    <div class="container footer-grid">
+        <div>
+            <strong>Государственный архив города Москвы</strong>
+            <p>Учебный веб-проект информационной системы городского архива.</p>
+        </div>
+        <div>
+            <strong>Разделы</strong>
+            <a href="{% url 'about' %}">Об организации</a>
+            <a href="{% url 'contacts' %}">Контакты</a>
+            <a href="{% url 'feedback' %}">Обратная связь</a>
+            <a href="{% url 'sitemap_page' %}">Карта сайта</a>
+        </div>
+        <div>
+            <strong>Доступность</strong>
+            <button type="button" class="footer-accessibility" data-accessibility-toggle>Версия для слабовидящих</button>
+            <p>Интерфейс предусматривает режим повышенной доступности в соответствии с требованиями задания.</p>
+        </div>
+    </div>
+    <div class="container footer-bottom">
+        <span>© {% now "Y" %} Архив Москвы</span>
+        <span>Информация на сайте носит учебный характер</span>
+    </div>
+</footer>
+<script>
+(function () {
+    const modal = document.getElementById('auth-modal');
+    if (!modal) return;
+    const open = document.querySelector('[data-auth-open]');
+    const closers = modal.querySelectorAll('[data-auth-close]');
+    const show = () => { modal.classList.add('is-open'); modal.setAttribute('aria-hidden', 'false'); };
+    const hide = () => { modal.classList.remove('is-open'); modal.setAttribute('aria-hidden', 'true'); };
+    if (open) open.addEventListener('click', show);
+    closers.forEach(el => el.addEventListener('click', hide));
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') hide(); });
+})();
+</script>
+</body>
+</html>

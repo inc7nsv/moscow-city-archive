@@ -1,0 +1,54 @@
+{% extends 'archive_app/base.html' %}
+{% block title %}Главная — Архив Москвы{% endblock %}
+{% block content %}
+<section class="hero">
+    <div class="container hero-inner">
+        <div>
+            <span class="eyebrow">Государственный архив города Москвы</span>
+            <h1>История города, сохраненная в документах</h1>
+            <p>Информационный ресурс для поиска публикаций, сведений об архиве и взаимодействия с организацией.</p>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="section-heading">
+            <div>
+                <span class="eyebrow">Публикации</span>
+                <h2>Материалы архива</h2>
+            </div>
+        </div>
+
+        <form class="search-form" method="get" action="{% url 'home' %}" role="search">
+            <label class="sr-only" for="search">Поиск по публикациям</label>
+            <input id="search" type="search" name="q" value="{{ query }}" placeholder="Поиск по статьям…">
+            <button class="primary-btn" type="submit">Найти</button>
+            {% if query %}<a class="outline-btn" href="{% url 'home' %}">Сбросить</a>{% endif %}
+        </form>
+
+        {% if articles %}
+        <div class="article-grid">
+            {% for article in articles %}
+            <article class="article-card">
+                <a class="card-image-link" href="{{ article.get_absolute_url }}" aria-label="Открыть статью: {{ article.title }}">
+                    <img src="{{ article.cover.url }}" alt="Обложка статьи {{ article.title }}">
+                </a>
+                <div class="card-body">
+                    <time datetime="{{ article.published_at|date:'c' }}">{{ article.published_at|date:'d.m.Y' }}</time>
+                    <h3><a href="{{ article.get_absolute_url }}">{{ article.title }}</a></h3>
+                    <p>{{ article.summary|truncatechars:180 }}</p>
+                    <a class="card-link" href="{{ article.get_absolute_url }}">Читать статью <span aria-hidden="true">→</span></a>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+        {% else %}
+            <div class="empty-state">
+                <h3>Информация отсутствует</h3>
+                {% if query %}<p>По запросу «{{ query }}» публикации не найдены.</p>{% endif %}
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

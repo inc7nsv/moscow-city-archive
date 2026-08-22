@@ -1,0 +1,5 @@
+{% extends 'archive_app/base.html' %}
+{% block title %}Страница не найдена — Архив Москвы{% endblock %}
+{% block content %}
+<section class="error-page"><div class="container error-box"><div class="error-code">404</div><h1>Страница не найдена</h1><p>Запрашиваемая страница не существует, была удалена или ее адрес указан неверно.</p><a class="primary-btn" href="{% url 'home' %}">Вернуться на главную</a></div></section>
+{% endblock %}

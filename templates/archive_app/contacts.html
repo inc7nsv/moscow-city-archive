@@ -1,0 +1,19 @@
+{% extends 'archive_app/base.html' %}
+{% block title %}Контакты — Архив Москвы{% endblock %}
+{% block content %}
+<section class="page-hero"><div class="container"><span class="eyebrow">Связь с организацией</span><h1>Контакты</h1></div></section>
+<section class="section"><div class="container narrow">
+{% if page %}
+<div class="content-card contacts-card">
+    <h2>{{ page.organization_name }}</h2>
+    <dl class="contact-list">
+        {% if page.address %}<div><dt>Адрес</dt><dd>{{ page.address }}</dd></div>{% endif %}
+        {% if page.phone %}<div><dt>Телефон</dt><dd><a href="tel:{{ page.phone }}">{{ page.phone }}</a></dd></div>{% endif %}
+        {% if page.email %}<div><dt>Электронная почта</dt><dd><a href="mailto:{{ page.email }}">{{ page.email }}</a></dd></div>{% endif %}
+        {% if page.working_hours %}<div><dt>Режим работы</dt><dd>{{ page.working_hours }}</dd></div>{% endif %}
+    </dl>
+    {% if page.additional_info %}<div class="prose">{{ page.additional_info|linebreaks }}</div>{% endif %}
+</div>
+{% else %}<div class="empty-state"><h2>Информация отсутствует</h2></div>{% endif %}
+</div></section>
+{% endblock %}

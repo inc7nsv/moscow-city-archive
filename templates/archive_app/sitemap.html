@@ -1,0 +1,21 @@
+{% extends 'archive_app/base.html' %}
+{% block title %}Карта сайта — Архив Москвы{% endblock %}
+{% block content %}
+<section class="page-hero"><div class="container"><span class="eyebrow">Навигация</span><h1>Карта сайта</h1></div></section>
+<section class="section"><div class="container narrow">
+<nav class="sitemap-card" aria-label="Карта сайта">
+    <ul>
+        <li><a href="{% url 'home' %}">Главная</a><span>Публикации и поиск по материалам</span></li>
+        <li><a href="{% url 'about' %}">Об организации</a><span>Сведения о городском архиве</span></li>
+        <li><a href="{% url 'contacts' %}">Контакты</a><span>Адрес, телефон, электронная почта и режим работы</span></li>
+        <li><a href="{% url 'feedback' %}">Обратная связь</a><span>Форма обращения</span></li>
+        {% if user.is_authenticated %}
+            <li><form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="link-button" type="submit">Выход из учетной записи</button></form></li>
+        {% else %}
+            <li><a href="{% url 'login' %}">Авторизация</a></li>
+            <li><a href="{% url 'register' %}">Регистрация</a></li>
+        {% endif %}
+    </ul>
+</nav>
+</div></section>
+{% endblock %}

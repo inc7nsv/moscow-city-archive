@@ -1,0 +1,14 @@
+{% extends 'archive_app/base.html' %}
+{% block title %}Об организации — Архив Москвы{% endblock %}
+{% block content %}
+<section class="page-hero"><div class="container"><span class="eyebrow">Архив Москвы</span><h1>Об организации</h1></div></section>
+<section class="section"><div class="container narrow">
+{% if page %}
+    <div class="content-card">
+        <h2>{{ page.title }}</h2>
+        {% if page.image %}<img class="page-image" src="{{ page.image.url }}" alt="{{ page.image_alt|default:page.title }}">{% endif %}
+        <div class="prose">{{ page.text|linebreaks }}</div>
+    </div>
+{% else %}<div class="empty-state"><h2>Информация отсутствует</h2></div>{% endif %}
+</div></section>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends 'archive_app/base.html' %}
+{% block title %}Обратная связь — Архив Москвы{% endblock %}
+{% block content %}
+<section class="page-hero"><div class="container"><span class="eyebrow">Обращения граждан</span><h1>Обратная связь</h1><p>Заполните форму. Обращение будет доступно сотруднику в административной панели.</p></div></section>
+<section class="section"><div class="container form-container">
+<form method="post" class="panel form-panel" novalidate>
+    {% csrf_token %}
+    {% for field in form %}
+        <div class="field">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}<small>{{ field.help_text }}</small>{% endif %}
+            {% for error in field.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+        </div>
+    {% endfor %}
+    <button class="primary-btn" type="submit">Отправить обращение</button>
+</form>
+</div></section>
+{% endblock %}
