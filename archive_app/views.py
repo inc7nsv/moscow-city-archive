@@ -104,5 +104,5 @@ def sitemap_page(request):
     return render(request, 'archive_app/sitemap.html')
 
 
-def custom_404(request, exception):
+def custom_404(request, exception=None):
     return render(request, 'archive_app/404.html', status=404)
